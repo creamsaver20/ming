@@ -226,10 +226,16 @@ function addRow() {
 
 // 단독 급여 행 추가
 function addSingleRow() {
-singleFeedCount++;
-const tbody = document.getElementById("singleFeedBody");
-const tr = document.createElement("tr");
+    singleFeedCount++;
+    const tbody = document.getElementById("singleFeedBody");
+    const tr = document.createElement("tr");
 
+    tr.innerHTML = `
+    ...
+    `;
+
+    tbody.appendChild(tr);
+}
 tr.innerHTML = `
 <td>
     <div class="row-num-cell">
