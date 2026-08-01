@@ -257,8 +257,9 @@ tr.innerHTML = `
 <td><input type="number" class="water" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>
 `;
-}
 
+tbody.appendChild(tr);
+}
 function deleteRow(button) {
 const row = button.closest("tr");
 row.remove();
