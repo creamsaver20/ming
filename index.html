@@ -60,10 +60,10 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <th>TASTE(g)</th>
 <th>CV(g)</th>
 <th>WATER(g)</th>
-<th>RC15+(g)</th>
-<th>PUR(pk)</th>
 <th>HYDRO(g)</th>
 <th>DIGE(g)</th>
+<th>PUR(pk)</th>
+<th>PURINA7+(g)</th>
 <th>LEFT(g)</th>
 </tr>
 </thead>
@@ -81,11 +81,14 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <thead>
 <tr>
 <th style="width: 140px;">Feed Name</th>
+<th>RC15+(g)</th>
+<th>RC11+(g)</th>
 <th>A/a(pk)</th>
 <th>P/a(pk)</th>
 <th>H(pk)</th>
 <th>PC(pk)</th>
 <th>PT(pk)</th>
+<th>PUR(pk)</th>
 <th>EASY(pk)</th>
 <th>LEO(pk)</th>
 <th>WATER(g)</th>
@@ -177,6 +180,7 @@ const nutritionData = {
 "LEO": { unit: "pk", kcal: 12.48, water: 36.8, solid: 3.2, protein: 2.2, fat: 0.24, phos: 4.0, calc: 4.0 }
 "RC11+": { unit: "g", kcal: 4.033, water: 0.06, solid: 0.94, protein: 0.30, fat: 0.16, phos: 7.0, calc: 6.3 },
 "PURINA7+": { unit: "g", kcal: 0.87, water: 0.80, solid: 0.20, protein: 0.117, fat: 0.031, phos: 2.0, calc: 3.0 },
+  
 };
 
 let feedCount = 0;
@@ -204,11 +208,11 @@ tr.innerHTML = &lt;td&gt; &lt;div class="row-num-cell"&gt; &lt;button class="del
 </td>
 <td><input type="number" class="taste" min="0" step="0.1"></td>
 <td><input type="number" class="cv" min="0" step="0.1"></td>
-<td><input type="number" class="water" min="0" step="0.1"></td>
-<td><input type="number" class="rc15" min="0" step="0.1"></td>
+<td><input type="number" class="purina7" min="0" step="0.1"></td>
 <td><input type="number" class="pur" min="0" step="0.1"></td>
 <td><input type="number" class="hydro" min="0" step="0.1"></td>
 <td><input type="number" class="dige" min="0" step="0.1"></td>
+<td><input type="number" class="water" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>
 `;
 tbody.appendChild(tr);
@@ -220,8 +224,27 @@ singleFeedCount++;
 const tbody = document.getElementById("singleFeedBody");
 const tr = document.createElement("tr");
 
-tr.innerHTML = &lt;td&gt; &lt;div class="row-num-cell"&gt; &lt;button class="delete-btn" onclick="deleteRow(this)" title="삭제"&gt;&times;&lt;/button&gt; &lt;input type="text" class="row-name" value="단독 ${singleFeedCount}회"&gt; &lt;/div&gt; &lt;/td&gt; &lt;td&gt;&lt;input type="number" class="aa" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pa" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="h" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pc" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pt" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="easy" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="leo" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="water" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="left" min="0" step="0.1"&gt;&lt;/td&gt;;
-tbody.appendChild(tr);
+tr.innerHTML = tr.innerHTML = `
+<td>
+    <div class="row-num-cell">
+        <button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button>
+        <input type="text" class="row-name" value="단독 ${singleFeedCount}회">
+    </div>
+</td>
+
+<td><input type="number" class="rc15" min="0" step="0.1"></td>
+<td><input type="number" class="rc11" min="0" step="0.1"></td>
+<td><input type="number" class="aa" min="0" step="0.1"></td>
+<td><input type="number" class="pa" min="0" step="0.1"></td>
+<td><input type="number" class="h" min="0" step="0.1"></td>
+<td><input type="number" class="pc" min="0" step="0.1"></td>
+<td><input type="number" class="pt" min="0" step="0.1"></td>
+<td><input type="number" class="pur" min="0" step="0.1"></td>
+<td><input type="number" class="easy" min="0" step="0.1"></td>
+<td><input type="number" class="leo" min="0" step="0.1"></td>
+<td><input type="number" class="water" min="0" step="0.1"></td>
+<td><input type="number" class="left" min="0" step="0.1"></td>
+`;
 }
 
 function deleteRow(button) {
@@ -323,9 +346,24 @@ link.click();
 function calculate() {
 let total = { kcal: 0, water: 0, solid: 0, protein: 0, fat: 0, phos: 0, calc: 0 };
 let totalConsumedFoods = {
-"TASTE": 0, "CV": 0, "P/a": 0, "A/a": 0, "WATER": 0,
-"RC15+": 0, "PUR": 0, "H": 0, "HYDRO": 0, "DIGE": 0,
-"PC": 0, "PT": 0, "EASY": 0, "LEO": 0
+"TASTE":0,
+"CV":0,
+"WATER":0,
+"HYDRO":0,
+"DIGE":0,
+"PUR":0,
+"PURINA7+":0,
+
+"RC15+":0,
+"RC11+":0,
+
+"A/a":0,
+"P/a":0,
+"H":0,
+"PC":0,
+"PT":0,
+"EASY":0,
+"LEO":0
 };
 
 const mixRows = document.querySelectorAll("#feedBody tr");
@@ -340,13 +378,13 @@ mixRows.forEach((row) => {
 const taste = parseFloat(row.querySelector(".taste").value) || 0;
 const cv = parseFloat(row.querySelector(".cv").value) || 0;
 const water = parseFloat(row.querySelector(".water").value) || 0;
-const rc15 = parseFloat(row.querySelector(".rc15").value) || 0;
 const pur = parseFloat(row.querySelector(".pur").value) || 0;
 const hydro = parseFloat(row.querySelector(".hydro").value) || 0;
 const dige = parseFloat(row.querySelector(".dige").value) || 0;
 const left = parseFloat(row.querySelector(".left").value) || 0;
+const purina7 = parseFloat(row.querySelector(".purina7").value) || 0;
 
-const totalGiven = taste + cv + water + rc15 + hydro + dige + (pur * 14);
+const totalGiven = taste + cv + water + hydro + dige + (pur * 14) + purina7
 
 if (totalGiven > 0) {
 hasAnyInput = true;
@@ -381,10 +419,10 @@ total.calc += actualAmount * nut.calc;
 addNutrition("TASTE", taste);
 addNutrition("CV", cv);
 addNutrition("WATER", water);
-addNutrition("RC15+", rc15);
 addNutrition("PUR", pur);
 addNutrition("HYDRO", hydro);
 addNutrition("DIGE", dige);
+addNutrition("PURINA7+", purina7);
 
 appendSummaryRow(perFeedBody, row.querySelector(".row-name").value, rowNutrients);
 }
@@ -392,6 +430,9 @@ appendSummaryRow(perFeedBody, row.querySelector(".row-name").value, rowNutrients
 
 // 2. 단독 급여 표 계산 로직
 singleRows.forEach((row) => {
+const rc15 = parseFloat(row.querySelector(".rc15").value) || 0;
+const rc11 = parseFloat(row.querySelector(".rc11").value) || 0;
+const pur = parseFloat(row.querySelector(".pur").value) || 0;
 const aa = parseFloat(row.querySelector(".aa").value) || 0;
 const pa = parseFloat(row.querySelector(".pa").value) || 0;
 const h = parseFloat(row.querySelector(".h").value) || 0;
@@ -403,7 +444,17 @@ const water = parseFloat(row.querySelector(".water").value) || 0;
 const left = parseFloat(row.querySelector(".left").value) || 0;
 
 // 각 패키지당 기준 용량을 혼합 급여와 동일하게 곱해줍니다.
-const totalGiven = (aa * 10) + (pa * 10) + (h * 12) + (pc * 14) + (pt * 14) + (easy * 14) + (leo * 40) + water;
+const totalGiven = rc15 +
+rc11 +
+(aa * 10) +
+(pa * 10) +
+(h * 12) +
+(pc * 14) +
+(pt * 14) +
+(pur * 14) +
+(easy * 14) +
+(leo * 40) +
+water;
 
 if (totalGiven > 0) {
 hasAnyInput = true;
@@ -435,15 +486,16 @@ total.calc += actualAmount * nut.calc;
 }
 };
 
+addNutrition("RC15+", rc15);
+addNutrition("RC11+", rc11);
 addNutrition("A/a", aa);
 addNutrition("P/a", pa);
 addNutrition("H", h);
 addNutrition("PC", pc);
 addNutrition("PT", pt);
+addNutrition("PUR", pur);
 addNutrition("EASY", easy);
 addNutrition("LEO", leo);
-addNutrition("WATER", water);
-
 appendSummaryRow(perFeedBody, row.querySelector(".row-name").value, rowNutrients);
 }
 });
