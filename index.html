@@ -177,7 +177,7 @@ const nutritionData = {
 "PC": { unit: "pk", kcal: 7.7, water: 12.18, solid: 1.82, protein: 1.12, fat: 0.028, phos: 5.6, calc: 0.42 },
 "PT": { unit: "pk", kcal: 7.14, water: 12.32, solid: 1.68, protein: 1.19, fat: 0.014, phos: 7.0, calc: 0.42 },
 "EASY": { unit: "pk", kcal: 9.0, water: 12.46, solid: 1.54, protein: 0.98, fat: 0.014, phos: 9.8, calc: 1.4 },
-"LEO": { unit: "pk", kcal: 12.48, water: 36.8, solid: 3.2, protein: 2.2, fat: 0.24, phos: 4.0, calc: 4.0 }
+"LEO": { unit: "pk", kcal: 12.48, water: 36.8, solid: 3.2, protein: 2.2, fat: 0.24, phos: 4.0, calc: 4.0 },
 "RC11+": { unit: "g", kcal: 4.033, water: 0.06, solid: 0.94, protein: 0.30, fat: 0.16, phos: 7.0, calc: 6.3 },
 "PURINA7+": { unit: "g", kcal: 0.87, water: 0.80, solid: 0.20, protein: 0.117, fat: 0.031, phos: 2.0, calc: 3.0 },
   
@@ -194,28 +194,34 @@ const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(today.getDate()).padStart(2, '0');
-document.getElementById("recordDate").value = ${year}-${month}-${day}`;
+document.getElementById("recordDate").value = `${year}-${month}-${day}`;
 };
 
 // 혼합 급여 행 추가 (단독 급여 항목 제외됨)
 function addRow() {
-feedCount++;
-const tbody = document.getElementById("feedBody");
-const tr = document.createElement("tr");
+    feedCount++;
+    const tbody = document.getElementById("feedBody");
+    const tr = document.createElement("tr");
 
-tr.innerHTML = &lt;td&gt; &lt;div class="row-num-cell"&gt; &lt;button class="delete-btn" onclick="deleteRow(this)" title="삭제"&gt;&times;&lt;/button&gt; &lt;input type="text" class="row-name" value="혼합${feedCount}회">
-</div>
+    tr.innerHTML = `
+<td>
+    <div class="row-num-cell">
+        <button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button>
+        <input type="text" class="row-name" value="혼합 ${feedCount}회">
+    </div>
 </td>
+
 <td><input type="number" class="taste" min="0" step="0.1"></td>
 <td><input type="number" class="cv" min="0" step="0.1"></td>
-<td><input type="number" class="purina7" min="0" step="0.1"></td>
-<td><input type="number" class="pur" min="0" step="0.1"></td>
+<td><input type="number" class="water" min="0" step="0.1"></td>
 <td><input type="number" class="hydro" min="0" step="0.1"></td>
 <td><input type="number" class="dige" min="0" step="0.1"></td>
-<td><input type="number" class="water" min="0" step="0.1"></td>
+<td><input type="number" class="pur" min="0" step="0.1"></td>
+<td><input type="number" class="purina7" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>
 `;
-tbody.appendChild(tr);
+
+    tbody.appendChild(tr);
 }
 
 // 단독 급여 행 추가
@@ -224,7 +230,7 @@ singleFeedCount++;
 const tbody = document.getElementById("singleFeedBody");
 const tr = document.createElement("tr");
 
-tr.innerHTML = tr.innerHTML = `
+tr.innerHTML = `
 <td>
     <div class="row-num-cell">
         <button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button>
