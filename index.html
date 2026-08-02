@@ -197,7 +197,7 @@ feedCount++;
 const tbody = document.getElementById("feedBody");
 const tr = document.createElement("tr");
 
-tr.innerHTML = &lt;td&gt; &lt;div class="row-num-cell"&gt; &lt;button class="delete-btn" onclick="deleteRow(this)" title="삭제"&gt;&times;&lt;/button&gt; &lt;input type="text" class="row-name" value="혼합${feedCount}회">
+tr.innerHTML = `<td><div class="row-num-cell"><button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button><input type="text" class="row-name" value="혼합${feedCount}회"></div></td>`;
 </div>
 </td>
 <td><input type="number" class="taste" min="0" step="0.1"></td>
@@ -217,11 +217,9 @@ function addSingleRow() {
 singleFeedCount++;
 const tbody = document.getElementById("singleFeedBody");
 const tr = document.createElement("tr");
-
-tr.innerHTML = &lt;td&gt; &lt;div class="row-num-cell"&gt; &lt;button class="delete-btn" onclick="deleteRow(this)" title="삭제"&gt;&times;&lt;/button&gt; &lt;input type="text" class="row-name" value="단독 ${singleFeedCount}회"&gt; &lt;/div&gt; &lt;/td&gt; &lt;td&gt;&lt;input type="number" class="aa" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pa" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="h" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pc" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="pt" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="easy" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="leo" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="water" min="0" step="0.1"&gt;&lt;/td&gt; &lt;td&gt;&lt;input type="number" class="left" min="0" step="0.1"&gt;&lt;/td&gt;;
+tr.innerHTML = `<td> <div class="row-num-cell"> <button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button> <input type="text" class="row-name" value="단독 ${singleFeedCount}회"> </div> </td> <td><input type="number" class="aa" min="0" step="0.1"></td> <td><input type="number" class="pa" min="0" step="0.1"></td> <td><input type="number" class="h" min="0" step="0.1"></td> <td><input type="number" class="pc" min="0" step="0.1"></td> <td><input type="number" class="pt" min="0" step="0.1"></td> <td><input type="number" class="easy" min="0" step="0.1"></td> <td><input type="number" class="leo" min="0" step="0.1"></td> <td><input type="number" class="water" min="0" step="0.1"></td> <td><input type="number" class="left" min="0" step="0.1"></td>`;
 tbody.appendChild(tr);
 }
-
 function deleteRow(button) {
 const row = button.closest("tr");
 row.remove();
