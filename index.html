@@ -72,7 +72,7 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 </table>
 </div>
 <div class="btn-group" id="mixBtnGroup">
-<button class="btn-add" onclick="addRow()">+ 혼합 급여 추가</button>
+<button type="button" class="btn-add" onclick="addRow()">+ 혼합 급여 추가</button>
 </div>
 
 <h3 id="singleHeading">단독 급여 기록 (A/a, P/a, H, PC, PT, EASY, LEO)</h3>
@@ -97,13 +97,13 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 </table>
 </div>
 <div class="btn-group" id="singleBtnGroup">
-<button class="btn-add" onclick="addSingleRow()" style="background-color: #ff9800;">+ 단독 급여 추가</button>
+<button type="button" class="btn-add" onclick="addSingleRow()" style="background-color: #ff9800;">+ 단독 급여 추가</button>
 </div>
 
 <div class="action-bars">
-<button class="btn-calc" onclick="calculate()">전체 계산하기</button>
-<button class="btn-clear" onclick="clearAll()">전체 지우기</button>
-<button class="btn-download" onclick="downloadImage()">이미지 다운로드</button>
+<button type="button" class="btn-calc" onclick="calculate()">전체 계산하기</button>
+<button type="button" class="btn-clear" onclick="clearAll()">전체 지우기</button>
+<button type="button" class="btn-download" onclick="downloadImage()">이미지 다운로드</button>
 </div>
 
 <h2>회차별 영양소 Summary</h2>
@@ -180,24 +180,14 @@ const nutritionData = {
 let feedCount = 0;
 let singleFeedCount = 0;
 
-window.onload = function() {
-addRow();
-addSingleRow();
-
-const today = new Date();
-const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0');
-const day = String(today.getDate()).padStart(2, '0');
-document.getElementById("recordDate").value = `${year}-${month}-${day}`;
-};
-
-// 혼합 급여 행 추가
-function addRow() {
+// 전역 함수 등록
+window.addRow = function() {
 feedCount++;
 const tbody = document.getElementById("feedBody");
+if (!tbody) return;
 const tr = document.createElement("tr");
 
-tr.innerHTML = `<td><div class="row-num-cell"><button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button><input type="text" class="row-name" value="혼합${feedCount}회"></div></td>
+tr.innerHTML = `<td><div class="row-num-cell"><button type="button" class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button><input type="text" class="row-name" value="혼합${feedCount}회"></div></td>
 <td><input type="number" class="taste" min="0" step="0.1"></td>
 <td><input type="number" class="cv" min="0" step="0.1"></td>
 <td><input type="number" class="water" min="0" step="0.1"></td>
@@ -207,33 +197,46 @@ tr.innerHTML = `<td><div class="row-num-cell"><button class="delete-btn" onclick
 <td><input type="number" class="dige" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>`;
 tbody.appendChild(tr);
-}
+};
 
-// 단독 급여 행 추가
-function addSingleRow() {
+window.addSingleRow = function() {
 singleFeedCount++;
 const tbody = document.getElementById("singleFeedBody");
+if (!tbody) return;
 const tr = document.createElement("tr");
 
-tr.innerHTML = `<td> <div class="row-num-cell"> <button class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button> <input type="text" class="row-name" value="단독 ${singleFeedCount}회"> </div> </td> <td><input type="number" class="aa" min="0" step="0.1"></td> <td><input type="number" class="pa" min="0" step="0.1"></td> <td><input type="number" class="h" min="0" step="0.1"></td> <td><input type="number" class="pc" min="0" step="0.1"></td> <td><input type="number" class="pt" min="0" step="0.1"></td> <td><input type="number" class="easy" min="0" step="0.1"></td> <td><input type="number" class="leo" min="0" step="0.1"></td> <td><input type="number" class="water" min="0" step="0.1"></td> <td><input type="number" class="left" min="0" step="0.1"></td>`;
+tr.innerHTML = `<td><div class="row-num-cell"><button type="button" class="delete-btn" onclick="deleteRow(this)" title="삭제">&times;</button><input type="text" class="row-name" value="단독 ${singleFeedCount}회"></div></td>
+<td><input type="number" class="aa" min="0" step="0.1"></td>
+<td><input type="number" class="pa" min="0" step="0.1"></td>
+<td><input type="number" class="h" min="0" step="0.1"></td>
+<td><input type="number" class="pc" min="0" step="0.1"></td>
+<td><input type="number" class="pt" min="0" step="0.1"></td>
+<td><input type="number" class="easy" min="0" step="0.1"></td>
+<td><input type="number" class="leo" min="0" step="0.1"></td>
+<td><input type="number" class="water" min="0" step="0.1"></td>
+<td><input type="number" class="left" min="0" step="0.1"></td>`;
 tbody.appendChild(tr);
-}
+};
 
-function deleteRow(button) {
+window.deleteRow = function(button) {
 const row = button.closest("tr");
-row.remove();
+if (row) row.remove();
 calculate();
-}
+};
 
-function clearAll() {
+window.clearAll = function() {
 const inputs = document.querySelectorAll("tbody input[type='number']");
 inputs.forEach(input => {
 input.value = "";
 });
 calculate();
-}
+};
 
-function downloadImage() {
+window.downloadImage = function() {
+if (typeof html2canvas === "undefined") {
+alert("이미지 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해주세요.");
+return;
+}
 const dateStr = document.getElementById("recordDate").value || "급여기록";
 const fileName = dateStr + ".png";
 
@@ -257,7 +260,6 @@ span.style.padding = "5px";
 dateInput.parentNode.replaceChild(span, dateInput);
 }
 
-// 혼합 급여에 입력된 값이 있는지 확인하고 없으면 숨기기
 const mixInputs = clonedDoc.querySelectorAll("#feedBody input[type='number']");
 let hasMixData = false;
 mixInputs.forEach(input => {
@@ -271,7 +273,6 @@ if (mixHeading) mixHeading.style.display = "none";
 if (mixContainer) mixContainer.style.display = "none";
 }
 
-// 단독 급여에 입력된 값이 있는지 확인하고 없으면 숨기기
 const singleInputs = clonedDoc.querySelectorAll("#singleFeedBody input[type='number']");
 let hasSingleData = false;
 singleInputs.forEach(input => {
@@ -285,7 +286,6 @@ if (singleHeading) singleHeading.style.display = "none";
 if (singleContainer) singleContainer.style.display = "none";
 }
 
-// 모든 표 안의 입력칸들을 텍스트로 변환
 const inputs = clonedDoc.querySelectorAll("tbody input");
 inputs.forEach(input => {
 const span = clonedDoc.createElement("span");
@@ -313,9 +313,9 @@ link.download = fileName;
 link.href = canvas.toDataURL("image/png");
 link.click();
 });
-}
+};
 
-function calculate() {
+window.calculate = function() {
 let total = { kcal: 0, water: 0, solid: 0, protein: 0, fat: 0, phos: 0, calc: 0 };
 let totalConsumedFoods = {
 "TASTE": 0, "CV": 0, "P/a": 0, "A/a": 0, "WATER": 0,
@@ -326,20 +326,21 @@ let totalConsumedFoods = {
 const mixRows = document.querySelectorAll("#feedBody tr");
 const singleRows = document.querySelectorAll("#singleFeedBody tr");
 const perFeedBody = document.getElementById("perFeedBody");
+if (!perFeedBody) return;
 perFeedBody.innerHTML = "";
 
 let hasAnyInput = false;
 
-// 1. 혼합 급여 표 계산 로직
+// 1. 혼합 급여 표 계산
 mixRows.forEach((row) => {
-const taste = parseFloat(row.querySelector(".taste").value) || 0;
-const cv = parseFloat(row.querySelector(".cv").value) || 0;
-const water = parseFloat(row.querySelector(".water").value) || 0;
-const rc15 = parseFloat(row.querySelector(".rc15").value) || 0;
-const pur = parseFloat(row.querySelector(".pur").value) || 0;
-const hydro = parseFloat(row.querySelector(".hydro").value) || 0;
-const dige = parseFloat(row.querySelector(".dige").value) || 0;
-const left = parseFloat(row.querySelector(".left").value) || 0;
+const taste = parseFloat(row.querySelector(".taste")?.value) || 0;
+const cv = parseFloat(row.querySelector(".cv")?.value) || 0;
+const water = parseFloat(row.querySelector(".water")?.value) || 0;
+const rc15 = parseFloat(row.querySelector(".rc15")?.value) || 0;
+const pur = parseFloat(row.querySelector(".pur")?.value) || 0;
+const hydro = parseFloat(row.querySelector(".hydro")?.value) || 0;
+const dige = parseFloat(row.querySelector(".dige")?.value) || 0;
+const left = parseFloat(row.querySelector(".left")?.value) || 0;
 
 const totalGiven = taste + cv + water + rc15 + hydro + dige + (pur * 14);
 
@@ -381,23 +382,22 @@ addNutrition("PUR", pur);
 addNutrition("HYDRO", hydro);
 addNutrition("DIGE", dige);
 
-appendSummaryRow(perFeedBody, row.querySelector(".row-name").value, rowNutrients);
+appendSummaryRow(perFeedBody, row.querySelector(".row-name")?.value, rowNutrients);
 }
 });
 
-// 2. 단독 급여 표 계산 로직
+// 2. 단독 급여 표 계산
 singleRows.forEach((row) => {
-const aa = parseFloat(row.querySelector(".aa").value) || 0;
-const pa = parseFloat(row.querySelector(".pa").value) || 0;
-const h = parseFloat(row.querySelector(".h").value) || 0;
-const pc = parseFloat(row.querySelector(".pc").value) || 0;
-const pt = parseFloat(row.querySelector(".pt").value) || 0;
-const easy = parseFloat(row.querySelector(".easy").value) || 0;
-const leo = parseFloat(row.querySelector(".leo").value) || 0;
-const water = parseFloat(row.querySelector(".water").value) || 0;
-const left = parseFloat(row.querySelector(".left").value) || 0;
+const aa = parseFloat(row.querySelector(".aa")?.value) || 0;
+const pa = parseFloat(row.querySelector(".pa")?.value) || 0;
+const h = parseFloat(row.querySelector(".h")?.value) || 0;
+const pc = parseFloat(row.querySelector(".pc")?.value) || 0;
+const pt = parseFloat(row.querySelector(".pt")?.value) || 0;
+const easy = parseFloat(row.querySelector(".easy")?.value) || 0;
+const leo = parseFloat(row.querySelector(".leo")?.value) || 0;
+const water = parseFloat(row.querySelector(".water")?.value) || 0;
+const left = parseFloat(row.querySelector(".left")?.value) || 0;
 
-// 각 패키지당 기준 용량을 혼합 급여와 동일하게 곱해줍니다.
 const totalGiven = (aa * 10) + (pa * 10) + (h * 12) + (pc * 14) + (pt * 14) + (easy * 14) + (leo * 40) + water;
 
 if (totalGiven > 0) {
@@ -439,7 +439,7 @@ addNutrition("EASY", easy);
 addNutrition("LEO", leo);
 addNutrition("WATER", water);
 
-appendSummaryRow(perFeedBody, row.querySelector(".row-name").value, rowNutrients);
+appendSummaryRow(perFeedBody, row.querySelector(".row-name")?.value, rowNutrients);
 }
 });
 
@@ -455,10 +455,9 @@ document.getElementById("res-fat").innerText = total.fat.toFixed(2);
 document.getElementById("res-phos").innerText = total.phos.toFixed(2);
 document.getElementById("res-calc").innerText = total.calc.toFixed(2);
 
-// 사료별 총 섭취량 표시 로직
 const consumedBody = document.getElementById("consumedFoodBody");
+if (consumedBody) {
 consumedBody.innerHTML = "";
-
 if (!hasAnyInput) {
 consumedBody.innerHTML = '<tr><td colspan="2" style="color: #888;">계산 버튼을 누르면 내역이 표시됩니다.</td></tr>';
 } else {
@@ -472,8 +471,8 @@ consumedBody.appendChild(tr);
 }
 }
 }
+};
 
-// Summary 표에 행을 추가하는 공통 함수
 function appendSummaryRow(tbody, name, nutrients) {
 const rowName = name || "이름 없음";
 const tr = document.createElement("tr");
@@ -486,6 +485,27 @@ tr.innerHTML = '<td><strong>' + rowName + '</strong></td>' +
 '<td>' + nutrients.phos.toFixed(2) + '</td>' +
 '<td>' + nutrients.calc.toFixed(2) + '</td>';
 tbody.appendChild(tr);
+}
+
+// DOM 준비 즉시 초기화
+function initApp() {
+addRow();
+addSingleRow();
+
+const dateElem = document.getElementById("recordDate");
+if (dateElem) {
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+dateElem.value = `${year}-${month}-${day}`;
+}
+}
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", initApp);
+} else {
+initApp();
 }
 </script>
 </body>
