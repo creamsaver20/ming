@@ -60,7 +60,7 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <th>TASTE(g)</th>
 <th>CV(g)</th>
 <th>WATER(g)</th>
-<th>RC15+(g)</th>
+<th>PURINA7+(g)</th>
 <th>PUR(pk)</th>
 <th>HYDRO(g)</th>
 <th>DIGE(g)</th>
@@ -75,7 +75,7 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <button type="button" class="btn-add" onclick="addRow()">+ 혼합 급여 추가</button>
 </div>
 
-<h3 id="singleHeading">단독 급여 기록 (A/a, P/a, H, PC, PT, EASY, LEO)</h3>
+<h3 id="singleHeading">단독 급여 기록 (A/a, P/a, H, PC, PT, EASY, LEO, RC15+, RC11+)</h3>
 <div class="table-responsive" id="singleTableContainer">
 <table id="singleFeedTable">
 <thead>
@@ -88,6 +88,8 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <th>PT(pk)</th>
 <th>EASY(pk)</th>
 <th>LEO(pk)</th>
+<th>RC15+(g)</th>
+<th>RC11+(g)</th>
 <th>WATER(g)</th>
 <th>LEFT(g)</th>
 </tr>
@@ -167,6 +169,8 @@ const nutritionData = {
 "A/a": { unit: "pk", kcal: 6.0, water: 8.5, solid: 1.5, protein: 0.87, fat: 0.31, phos: 20.0, calc: 5.0 },
 "WATER": { unit: "g", kcal: 0, water: 1.0, solid: 0, protein: 0, fat: 0, phos: 0, calc: 0 },
 "RC15+": { unit: "g", kcal: 4.216, water: 0.065, solid: 0.935, protein: 0.29, fat: 0.19, phos: 5.0, calc: 6.6 },
+"RC11+": { unit: "g", kcal: 4.033, water: 0.07, solid: 0.93, protein: 0.30, fat: 0.16, phos: 7.0, calc: 6.3 },
+"PURINA7+": { unit: "g", kcal: 73.95 / 85, water: 0.80, solid: 0.20, protein: 0.117, fat: 0.031, phos: 1.7, calc: 2.55 },
 "PUR": { unit: "pk", kcal: 8.5, water: 12.8, solid: 1.2, protein: 1.26, fat: 0.0224, phos: 9.8, calc: 1.4 },
 "H": { unit: "pk", kcal: 7.0, water: 10.8, solid: 1.2, protein: 0.6, fat: 0.24, phos: 6.0, calc: 8.4 },
 "HYDRO": { unit: "g", kcal: 0.22, water: 0.97, solid: 0.03, protein: 0.02, fat: 0.001, phos: 0.1, calc: 0.001 },
@@ -191,7 +195,7 @@ tr.innerHTML = `<td><div class="row-num-cell"><button type="button" class="delet
 <td><input type="number" class="taste" min="0" step="0.1"></td>
 <td><input type="number" class="cv" min="0" step="0.1"></td>
 <td><input type="number" class="water" min="0" step="0.1"></td>
-<td><input type="number" class="rc15" min="0" step="0.1"></td>
+<td><input type="number" class="purina7" min="0" step="0.1"></td>
 <td><input type="number" class="pur" min="0" step="0.1"></td>
 <td><input type="number" class="hydro" min="0" step="0.1"></td>
 <td><input type="number" class="dige" min="0" step="0.1"></td>
@@ -213,6 +217,8 @@ tr.innerHTML = `<td><div class="row-num-cell"><button type="button" class="delet
 <td><input type="number" class="pt" min="0" step="0.1"></td>
 <td><input type="number" class="easy" min="0" step="0.1"></td>
 <td><input type="number" class="leo" min="0" step="0.1"></td>
+<td><input type="number" class="rc15" min="0" step="0.1"></td>
+<td><input type="number" class="rc11" min="0" step="0.1"></td>
 <td><input type="number" class="water" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>`;
 tbody.appendChild(tr);
@@ -319,7 +325,7 @@ window.calculate = function() {
 let total = { kcal: 0, water: 0, solid: 0, protein: 0, fat: 0, phos: 0, calc: 0 };
 let totalConsumedFoods = {
 "TASTE": 0, "CV": 0, "P/a": 0, "A/a": 0, "WATER": 0,
-"RC15+": 0, "PUR": 0, "H": 0, "HYDRO": 0, "DIGE": 0,
+"RC15+": 0, "RC11+": 0, "PURINA7+": 0, "PUR": 0, "H": 0, "HYDRO": 0, "DIGE": 0,
 "PC": 0, "PT": 0, "EASY": 0, "LEO": 0
 };
 
@@ -336,13 +342,13 @@ mixRows.forEach((row) => {
 const taste = parseFloat(row.querySelector(".taste")?.value) || 0;
 const cv = parseFloat(row.querySelector(".cv")?.value) || 0;
 const water = parseFloat(row.querySelector(".water")?.value) || 0;
-const rc15 = parseFloat(row.querySelector(".rc15")?.value) || 0;
+const purina7 = parseFloat(row.querySelector(".purina7")?.value) || 0;
 const pur = parseFloat(row.querySelector(".pur")?.value) || 0;
 const hydro = parseFloat(row.querySelector(".hydro")?.value) || 0;
 const dige = parseFloat(row.querySelector(".dige")?.value) || 0;
 const left = parseFloat(row.querySelector(".left")?.value) || 0;
 
-const totalGiven = taste + cv + water + rc15 + hydro + dige + (pur * 14);
+const totalGiven = taste + cv + water + purina7 + hydro + dige + (pur * 14);
 
 if (totalGiven > 0) {
 hasAnyInput = true;
@@ -377,7 +383,7 @@ total.calc += actualAmount * nut.calc;
 addNutrition("TASTE", taste);
 addNutrition("CV", cv);
 addNutrition("WATER", water);
-addNutrition("RC15+", rc15);
+addNutrition("PURINA7+", purina7);
 addNutrition("PUR", pur);
 addNutrition("HYDRO", hydro);
 addNutrition("DIGE", dige);
@@ -395,10 +401,12 @@ const pc = parseFloat(row.querySelector(".pc")?.value) || 0;
 const pt = parseFloat(row.querySelector(".pt")?.value) || 0;
 const easy = parseFloat(row.querySelector(".easy")?.value) || 0;
 const leo = parseFloat(row.querySelector(".leo")?.value) || 0;
+const rc15 = parseFloat(row.querySelector(".rc15")?.value) || 0;
+const rc11 = parseFloat(row.querySelector(".rc11")?.value) || 0;
 const water = parseFloat(row.querySelector(".water")?.value) || 0;
 const left = parseFloat(row.querySelector(".left")?.value) || 0;
 
-const totalGiven = (aa * 10) + (pa * 10) + (h * 12) + (pc * 14) + (pt * 14) + (easy * 14) + (leo * 40) + water;
+const totalGiven = (aa * 10) + (pa * 10) + (h * 12) + (pc * 14) + (pt * 14) + (easy * 14) + (leo * 40) + rc15 + rc11 + water;
 
 if (totalGiven > 0) {
 hasAnyInput = true;
@@ -437,6 +445,8 @@ addNutrition("PC", pc);
 addNutrition("PT", pt);
 addNutrition("EASY", easy);
 addNutrition("LEO", leo);
+addNutrition("RC15+", rc15);
+addNutrition("RC11+", rc11);
 addNutrition("WATER", water);
 
 appendSummaryRow(perFeedBody, row.querySelector(".row-name")?.value, rowNutrients);
