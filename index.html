@@ -65,6 +65,8 @@ font-size: 16px; font-weight: bold; padding: 0; transition: background-color 0.2
 <th>PUR(pk)</th>
 <th>HYDRO(g)</th>
 <th>DIGE(g)</th>
+<th>HILLS(g)</th>
+<th>OSTECH(g)</th>
 <th>LEFT(g)</th>
 </tr>
 </thead>
@@ -175,6 +177,8 @@ const nutritionData = {
 "H": { unit: "pk", kcal: 7.0, water: 10.8, solid: 1.2, protein: 0.6, fat: 0.24, phos: 6.0, calc: 8.4 },
 "HYDRO": { unit: "g", kcal: 0.22, water: 0.97, solid: 0.03, protein: 0.02, fat: 0.001, phos: 0.1, calc: 0.001 },
 "DIGE": { unit: "g", kcal: 1.24, water: 0.79, solid: 0.21, protein: 0.075, fat: 0.015, phos: 1.8, calc: 0 },
+"HILLS": { unit: "g", kcal: 0.67, water: 0.85, solid: 0.15, protein: 0.0447, fat: 0.03675, phos: 0.78, calc: 0 },
+"OSTECH": { unit: "g", kcal: 0.39, water: 0.895, solid: 0.105, protein: 0, fat: 0, phos: 0, calc: 0 },
 "PC": { unit: "pk", kcal: 7.7, water: 12.18, solid: 1.82, protein: 1.12, fat: 0.028, phos: 5.6, calc: 0.42 },
 "PT": { unit: "pk", kcal: 7.14, water: 12.32, solid: 1.68, protein: 1.19, fat: 0.014, phos: 7.0, calc: 0.42 },
 "EASY": { unit: "pk", kcal: 9.0, water: 12.46, solid: 1.54, protein: 0.98, fat: 0.014, phos: 9.8, calc: 1.4 },
@@ -200,6 +204,8 @@ tr.innerHTML = `<td><div class="row-num-cell"><button type="button" class="delet
 <td><input type="number" class="pur" min="0" step="0.1"></td>
 <td><input type="number" class="hydro" min="0" step="0.1"></td>
 <td><input type="number" class="dige" min="0" step="0.1"></td>
+<td><input type="number" class="hills" min="0" step="0.1"></td>
+<td><input type="number" class="ostech" min="0" step="0.1"></td>
 <td><input type="number" class="left" min="0" step="0.1"></td>`;
 tbody.appendChild(tr);
 };
@@ -325,7 +331,7 @@ let total = { kcal: 0, water: 0, solid: 0, protein: 0, fat: 0, phos: 0, calc: 0 
 let totalConsumedFoods = {
 "TASTE": 0, "AGE11+": 0, "CV": 0, "P/a": 0, "A/a": 0, "WATER": 0,
 "RC15+": 0, "RC11+": 0, "PURINA7+": 0, "PUR": 0, "H": 0, "HYDRO": 0, "DIGE": 0,
-"PC": 0, "PT": 0, "EASY": 0, "LEO": 0
+"HILLS": 0, "OSTECH": 0, "PC": 0, "PT": 0, "EASY": 0, "LEO": 0
 };
 
 const mixRows = document.querySelectorAll("#feedBody tr");
@@ -346,9 +352,11 @@ const purina7 = parseFloat(row.querySelector(".purina7")?.value) || 0;
 const pur = parseFloat(row.querySelector(".pur")?.value) || 0;
 const hydro = parseFloat(row.querySelector(".hydro")?.value) || 0;
 const dige = parseFloat(row.querySelector(".dige")?.value) || 0;
+const hills = parseFloat(row.querySelector(".hills")?.value) || 0;
+const ostech = parseFloat(row.querySelector(".ostech")?.value) || 0;
 const left = parseFloat(row.querySelector(".left")?.value) || 0;
 
-const totalGiven = taste + age11 + cv + water + purina7 + hydro + dige + (pur * 14);
+const totalGiven = taste + age11 + cv + water + purina7 + hydro + dige + hills + ostech + (pur * 14);
 
 if (totalGiven > 0) {
 hasAnyInput = true;
@@ -388,6 +396,8 @@ addNutrition("PURINA7+", purina7);
 addNutrition("PUR", pur);
 addNutrition("HYDRO", hydro);
 addNutrition("DIGE", dige);
+addNutrition("HILLS", hills);
+addNutrition("OSTECH", ostech);
 
 appendSummaryRow(perFeedBody, row.querySelector(".row-name")?.value, rowNutrients);
 }
@@ -455,7 +465,7 @@ perFeedBody.innerHTML = '<tr><td colspan="8" style="color: #888;">계산 버튼�
 }
 
 document.getElementById("res-kcal").innerText = total.kcal.toFixed(2);
-document.getElementById("res-water").innerText = total.water.toFixed(2);
+document.getElementById("res-water").innerText = total.water.innerText = total.water.toFixed(2);
 document.getElementById("res-solid").innerText = total.solid.toFixed(2);
 document.getElementById("res-protein").innerText = total.protein.toFixed(2);
 document.getElementById("res-fat").innerText = total.fat.toFixed(2);
